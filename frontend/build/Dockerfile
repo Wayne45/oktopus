@@ -17,6 +17,6 @@ COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/public ./public
 
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 CMD [ "npm", "run", "start" ]
