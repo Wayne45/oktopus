@@ -24,7 +24,7 @@ The platform consists of multiple components including a message broker, API RES
 │       ├── mtp
 │       └── utils
 ├── deploy
-│   ├── compose
+│   ├── oktopus
 │   │   ├── docker-compose.yaml
 │   │   ├── run.sh
 │   │   └── stop.sh
@@ -49,7 +49,7 @@ The platform consists of multiple components including a message broker, API RES
 ```
 
 Key Files:
-- `deploy/compose/docker-compose.yaml`: Main configuration file for Docker Compose deployment
+- `deploy/oktopus/docker-compose.yaml`: Main configuration file for Docker Compose deployment
 - `deploy/kubernetes/*.yaml`: Kubernetes deployment configurations
 - `frontend/src/pages/_app.js`: Main entry point for the frontend application
 - `frontend/src/contexts/auth-context.js`: Authentication context for the frontend
@@ -73,7 +73,7 @@ Prerequisites:
    ```
 
 2. Set up environment variables:
-   Create `.env` files for each service in the `deploy/compose` directory (e.g., `.env.nats`, `.env.controller`, etc.)
+   Create `.env` files for each service in the `deploy/oktopus` directory (e.g., `.env.nats`, `.env.controller`, etc.)
 
 3. Run the deployment script:
    ```
@@ -100,7 +100,7 @@ Prerequisites:
 
 ### Configuration
 
-- NATS: Configure the message broker in `deploy/compose/nats_config/nats.cfg`
+- NATS: Configure the message broker in `deploy/oktopus/nats_config/nats.cfg`
 - Controller: Set environment variables in `.env.controller`
 - Frontend: Update API endpoints in `frontend/src/contexts/backend-context.js`
 
@@ -130,7 +130,7 @@ Device -> MTP -> Adapter -> NATS -> Controller <-> MongoDB
 
 ## Deployment
 
-For detailed deployment instructions, refer to the `deploy/kubernetes/README.md` file for Kubernetes deployment or use the Docker Compose files in the `deploy/compose` directory for container-based deployment.
+For detailed deployment instructions, refer to the `deploy/kubernetes/README.md` file for Kubernetes deployment or use the Docker Compose files in the `deploy/oktopus` directory for container-based deployment.
 
 ## Infrastructure
 
