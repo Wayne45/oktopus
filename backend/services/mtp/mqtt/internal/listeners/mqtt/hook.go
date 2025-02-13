@@ -184,3 +184,42 @@ func (h *NatsAuthHook) OnACLCheck(cl *mqtt.Client, topic string, write bool) boo
 
 	return false
 }
+
+// ----------------------------
+
+type CustomAuthHook struct {
+	mqtt.HookBase
+	Users map[string]string // Map of username to password
+}
+
+func (h *CustomAuthHook) ID() string {
+	return "custom-auth"
+}
+
+func (h *CustomAuthHook) Provides(b byte) bool {
+	return bytes.Contains([]byte{
+		mqtt.OnConnectAuthenticate,
+		mqtt.OnACLCheck,
+	}, []byte{b})
+}
+
+func (h *CustomAuthHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packet) bool {
+	username := string(pk.Connect.Username)
+	password := string(pk.Connect.Password)
+
+	if expectedPassword, ok := h.Users[username]; ok {
+		if expectedPassword == password {
+			return true
+		}
+	}
+
+	log.Printf("Authentication failed for user: %s", username)
+	return false
+}
+
+func (h *CustomAuthHook) OnACLCheck(cl *mqtt.Client, topic string, write bool) bool {
+	username := string(cl.Properties.Username)
+
+	log.Printf("CustomAuthHook OnACLCheck byPassed. topic=%s username=%s", topic, username)
+	return true
+}

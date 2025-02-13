@@ -20,16 +20,18 @@ var (
 )
 
 type Mqtt struct {
-	Port       string
-	TlsPort    string
-	Tls        bool
-	NoTls      bool
-	Fullchain  string
-	Privkey    string
-	Redis      Redis
-	LogLevel   int
-	Nats       config.Nats
-	AuthEnable bool
+	Port          string
+	TlsPort       string
+	Tls           bool
+	NoTls         bool
+	Fullchain     string
+	Privkey       string
+	Redis         Redis
+	LogLevel      int
+	Nats          config.Nats
+	AuthEnable    bool
+	MqttUsernames []string
+	MqttPasswords []string
 }
 
 type Redis struct {
@@ -41,7 +43,8 @@ type Redis struct {
 func (m *Mqtt) Start(mqttServer *mqtt.Server) {
 
 	defineSeverLog(mqttServer, m.LogLevel)
-	defineServerAuth(mqttServer, m.Nats, m.AuthEnable)
+	//defineServerAuth(mqttServer, m.Nats, m.AuthEnable)
+	defineServerAuth(mqttServer, m.Nats, m.AuthEnable, m.MqttUsernames, m.MqttPasswords)
 
 	server = mqttServer
 
@@ -119,9 +122,15 @@ func defineServerTls(fullchain, privkey string) *listeners.Config {
 	return nil
 }
 
-func defineServerAuth(server *mqtt.Server, natsConfig config.Nats, authEnable bool) {
+func defineServerAuth(server *mqtt.Server, natsConfig config.Nats, authEnable bool, users []string, passwords []string) {
 	if authEnable {
-		err := server.AddHook(new(NatsAuthHook), natsConfig)
+		userMap := make(map[string]string)
+		for i := range users {
+			userMap[users[i]] = passwords[i]
+		}
+
+		//err := server.AddHook(new(NatsAuthHook), natsConfig)
+		err := server.AddHook(&CustomAuthHook{Users: userMap}, nil)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -64,8 +64,10 @@ func newMqttServer(c config.Config) *broker.Mqtt {
 			RedisAddr:     c.RedisAddr,
 			RedisPassword: c.RedisPassword,
 		},
-		LogLevel: c.LogLevel,
-		Nats:     c.Nats,
+		LogLevel:      c.LogLevel,
+		Nats:          c.Nats,
+		MqttUsernames: c.MqttUsernames,
+		MqttPasswords: c.MqttPasswords,
 	}
 }
 

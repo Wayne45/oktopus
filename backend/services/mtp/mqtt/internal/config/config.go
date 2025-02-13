@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"strings"
 
 	"github.com/joho/godotenv"
 )
@@ -29,6 +30,8 @@ type Config struct {
 	HttpPort      string
 	LogLevel      int
 	Nats          Nats
+	MqttUsernames []string
+	MqttPasswords []string
 }
 
 type Nats struct {
@@ -77,6 +80,8 @@ func NewConfig() Config {
 	clientCrt := flag.String("client_crt", lookupEnvOrString("CLIENT_CRT", "cert.pem"), "client certificate file to TLS connection")
 	clientKey := flag.String("client_key", lookupEnvOrString("CLIENT_KEY", "key.pem"), "client key file to TLS connection")
 	serverCA := flag.String("server_ca", lookupEnvOrString("SERVER_CA", "rootCA.pem"), "server CA file to TLS connection")
+	mqttUsernames := flag.String("mqtt_usernames", lookupEnvOrString("MQTT_USERNAMES", ""), "comma-separated list of MQTT usernames")
+	mqttPasswords := flag.String("mqtt_passwords", lookupEnvOrString("MQTT_PASSWORDS", ""), "comma-separated list of MQTT passwords")
 
 	flag.Parse()
 	flHelp := flag.Bool("help", false, "Help")
@@ -119,6 +124,8 @@ func NewConfig() Config {
 				CaFile:   *serverCA,
 			},
 		},
+		MqttUsernames: strings.Split(*mqttUsernames, ","),
+		MqttPasswords: strings.Split(*mqttPasswords, ","),
 	}
 
 	conf.validate()

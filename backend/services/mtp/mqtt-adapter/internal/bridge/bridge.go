@@ -89,7 +89,7 @@ func (b *Bridge) StartBridge(serverUrl, clientId string) {
 		},
 	}
 
-	b.setMqttPassword()
+	// b.setMqttPassword()
 	if b.Mqtt.Username != "" && b.Mqtt.Password != "" {
 		autopahoClientConfig.SetUsernamePassword(b.Mqtt.Username, []byte(b.Mqtt.Password))
 	}
